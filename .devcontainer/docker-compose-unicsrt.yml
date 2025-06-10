@@ -1,16 +1,15 @@
 version: "3.8"
 
 networks:
-  confectionary-nets:
+  dmarket-nets:
     external: true
 
 # Storage outside the containers
 volumes:
-  data-orderer.confectionary.com:
-  data-shop1.confectionary.com:
-  data-shop2.confectionary.com:
-  data-mill.flourmill.com:
-  data-ovens.bakingstuff.com:
+  data-orderer.dmarket.com:
+  data-buyer.dmarket.com:
+  data-seller.dmarket.com:
+  data-bank.dmarket.com:
 
 services:
   development:
@@ -24,11 +23,11 @@ services:
     volumes:
       - ../..:/workspaces:cached
     networks:
-      - confectionary-nets
+      - dmarket-nets
 
   # Orderer service
-  orderer.confectionary.com:
-    container_name: orderer.confectionary.com
+  orderer.dmarket.com:
+    container_name: orderer.dmarket.com
     image: hyperledger/fabric-orderer:$IMAGE_TAG
     command: orderer
     environment:
@@ -36,103 +35,80 @@ services:
       - FABRIC_LOGGING_SPEC=ERROR
     volumes:
       - ${PWD}/config/orderer:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/ordererOrganizations/confectionary.com/orderers/orderer.confectionary.com/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/ordererOrganizations/confectionary.com/orderers/orderer.confectionary.com/tls:/var/hyperledger/tls
-      - data-orderer.confectionary.com:/var/ledger
+      - ${PWD}/config/crypto-config/ordererOrganizations/dmarket.com/orderers/orderer.dmarket.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/ordererOrganizations/dmarket.com/orderers/orderer.dmarket.com/tls:/var/hyperledger/tls
+      - data-orderer.dmarket.com:/var/ledger
     ports:
       - 7050:7050
       - 8443:8443
     networks:
-      - confectionary-nets
+      - dmarket-nets
 
-  shop1.confectionary.com:
-    container_name: shop1.confectionary.com
+  buyer.dmarket.com:
+    container_name: buyer.dmarket.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       - FABRIC_CFG_PATH=/var/hyperledger/config
       - FABRIC_LOGGING_SPEC=WARNING
-      - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=confectionary-nets
+      - CORE_PEER_LOCALMSPID=BuyerMSP
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=dmarket-nets
     command: peer node start
     volumes:
-      - ${PWD}/config/shop1:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/confectionary.com/peers/shop1/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/confectionary.com/peers/shop1/tls:/var/hyperledger/tls
+      - ${PWD}/config/buyer:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/peerOrganizations/buyer.dmarket.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/buyer.dmarket.com/peers/buyer/tls:/var/hyperledger/tls
       - /var/run/:/var/run/
-      - data-shop1.confectionary.com:/var/hyperledger/production
+      - data-buyer.dmarket.com:/var/hyperledger/production
     depends_on:
-      - orderer.confectionary.com
+      - orderer.dmarket.com
     ports:
       - 7051:7051
       - 7052:7052
     networks:
-      - confectionary-nets
+      - dmarket-nets
 
-  shop2.confectionary.com:
-    container_name: shop2.confectionary.com
+  seller.dmarket.com:
+    container_name: seller.dmarket.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       - FABRIC_CFG_PATH=/var/hyperledger/config
       - FABRIC_LOGGING_SPEC=WARNING
-      - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=confectionary-nets
+      - CORE_PEER_LOCALMSPID=SellerMSP
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=dmarket-nets
     command: peer node start
     volumes:
-      - ${PWD}/config/shop2:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/confectionary.com/peers/shop2/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/confectionary.com/peers/shop2/tls:/var/hyperledger/tls
+      - ${PWD}/config/seller:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/seller/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/seller/tls:/var/hyperledger/tls
       - /var/run/:/var/run/
-      - data-shop2.confectionary.com:/var/hyperledger/production
+      - data-seller.dmarket.com:/var/hyperledger/production
     depends_on:
-      - orderer.confectionary.com
+      - orderer.dmarket.com
     ports:
       - 8051:7051
       - 8052:7052
     networks:
-      - confectionary-nets
+      - dmarket-nets
 
-  mill.flourmill.com:
-    container_name: mill.flourmill.com
+  bank.dmarket.com:
+    container_name: bank.dmarket.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       - FABRIC_CFG_PATH=/var/hyperledger/config
       - FABRIC_LOGGING_SPEC=WARNING
-      - CORE_PEER_LOCALMSPID=Org2MSP
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=confectionary-nets
+      - CORE_PEER_LOCALMSPID=BankMSP
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=dmarket-nets
     command: peer node start
     volumes:
-      - ${PWD}/config/mills:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/flourmill.com/peers/mill/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/flourmill.com/peers/mill/tls:/var/hyperledger/tls
+      - ${PWD}/config/bank:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/bank/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/bank/tls:/var/hyperledger/tls
       - /var/run/:/var/run/
-      - data-mill.flourmill.com:/var/hyperledger/production
+      - data-bank.dmarket.com:/var/hyperledger/production
     depends_on:
-      - orderer.confectionary.com
+      - orderer.dmarket.com
     ports:
       - 9051:7051
       - 9052:7052
     networks:
-      - confectionary-nets
-
-  ovens.bakingstuff.com:
-    container_name: ovens.bakingstuff.com
-    image: hyperledger/fabric-peer:$IMAGE_TAG
-    environment:
-      - FABRIC_CFG_PATH=/var/hyperledger/config
-      - FABRIC_LOGGING_SPEC=WARNING
-      - CORE_PEER_LOCALMSPID=Org3MSP
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=confectionary-nets
-    command: peer node start
-    volumes:
-      - ${PWD}/config/ovens:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/bakingstuff/peers/ovens/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/bakingstuff/peers/ovens/tls:/var/hyperledger/tls
-      - /var/run/:/var/run/
-      - data-ovens.bakingstuff.com:/var/hyperledger/production
-    depends_on:
-      - orderer.confectionary.com
-    ports:
-      - 10051:7051
-      - 10052:7052
-    networks:
-      - confectionary-nets
+      - dmarket-nets

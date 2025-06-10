@@ -52,7 +52,7 @@
 function usage {
     echo "Usage:             . ./set_peer_env.sh  ORG_NAME"
     echo "           Sets the organization context for native peer execution"
-    echo "           ORG_NAME must be one of: org1, org2, org3"
+    echo "           ORG_NAME must be one of: bank, buyer, seller"
 }
 
 if [ "$1" == "" ]; then
@@ -63,26 +63,26 @@ fi
 ORG_CONTEXT=$1
 
 case "$ORG_CONTEXT" in
-    org1)
-        export ORG_NAME=Org1
-        export CORE_PEER_LOCALMSPID=Org1MSP
-        export FABRIC_CFG_PATH=/workspaces/hfl-network1/config/shop1
-        export CORE_PEER_ADDRESS=shop1:7051
-        export CORE_PEER_MSPCONFIGPATH=/workspaces/hfl-network1/config/crypto-config/peerOrganizations/confectionary.com/users/Admin@confectionary.com/msp
+    bank)
+        export ORG_NAME=Bank
+        export CORE_PEER_LOCALMSPID=BankMSP
+        export FABRIC_CFG_PATH=/workspaces/dnetwork/config/bank
+        export CORE_PEER_ADDRESS=bank.dmarket.com:7051
+        export CORE_PEER_MSPCONFIGPATH=/workspaces/dnetwork/config/crypto-config/peerOrganizations/dmarket.com/peers/bank/msp
         ;;
-    org2)
-        export ORG_NAME=Org2
-        export CORE_PEER_LOCALMSPID=Org2MSP
-        export FABRIC_CFG_PATH=/workspaces/hfl-network1/config/mills
-        export CORE_PEER_ADDRESS=mill:7051
-        export CORE_PEER_MSPCONFIGPATH=/workspaces/hfl-network1/config/crypto-config/peerOrganizations/flourmill.com/users/Admin@flourmill.com/msp
+    buyer)
+        export ORG_NAME=Buyer
+        export CORE_PEER_LOCALMSPID=BuyerMSP
+        export FABRIC_CFG_PATH=/workspaces/dnetwork/config/buyer
+        export CORE_PEER_ADDRESS=buyer.dmarket.com:7051
+        export CORE_PEER_MSPCONFIGPATH=/workspaces/dnetwork/config/crypto-config/peerOrganizations/dmarket.com/peers/buyer/msp
         ;;
-    org3)
-        export ORG_NAME=Org3
-        export CORE_PEER_LOCALMSPID=Org3MSP
-        export FABRIC_CFG_PATH=/workspaces/hfl-network1/config/ovens
-        export CORE_PEER_ADDRESS=ovens:7051
-        export CORE_PEER_MSPCONFIGPATH=/workspaces/hfl-network1/config/crypto-config/peerOrganizations/bakingstuff/users/Admin@bakingstuff/msp
+    seller)
+        export ORG_NAME=Seller
+        export CORE_PEER_LOCALMSPID=SellerMSP
+        export FABRIC_CFG_PATH=/workspaces/dnetwork/config/seller
+        export CORE_PEER_ADDRESS=seller.dmarket.com:7051
+        export CORE_PEER_MSPCONFIGPATH=/workspaces/dnetwork/config/crypto-config/peerOrganizations/dmarket.com/peers/seller/msp
         ;;
     *)
         echo "Unknown organization: $ORG_CONTEXT"
@@ -92,5 +92,5 @@ case "$ORG_CONTEXT" in
 esac
 
 export FABRIC_LOGGING_SPEC=INFO
-export ORDERER_ADDRESS=orderer.confectionary.com:7050
+export ORDERER_ADDRESS=orderer.dmarket.com:7050
 export CORE_PEER_TLS_ENABLED=false

@@ -1,50 +1,30 @@
-# Defines four organizations:
-# - Orderer organization
-# - Org1 (shop nodes)
-# - Org2 (mill node)
-# - Org3 (oven node)
-
 OrdererOrgs:
   - Name: Orderer
-    Domain: confectionary.com
-    # EnableNodeOUs: false
+    Domain: dmarket.com
+    EnableNodeOUs: true
     Specs:
       - Hostname: orderer
 
 PeerOrgs:
-  # Peer configuration for Org1
-  - Name: Org1
-    Domain: confectionary.com
-    # EnableNodeOUs: false
-    Specs:
-      - Hostname: shop1
-        CommonName: shop1
-      - Hostname: shop2
-        CommonName: shop2
-    Template:
-      Count: 2
-    Users:
-      Count: 2
-
-  # Peer configuration for Org2
-  - Name: Org2
-    Domain: flourmill.com
-    # EnableNodeOUs: false
-    Specs:
-      - Hostname: mill
-        CommonName: mill
+  - Name: Buyer
+    Domain: buyer.dmarket.com
+    EnableNodeOUs: true
     Template:
       Count: 1
     Users:
       Count: 1
 
-  # Peer configuration for Org3
-  - Name: Org3
-    Domain: bakingstuff
-    # EnableNodeOUs: false
-    Specs:
-      - Hostname: ovens
-        CommonName: ovens
+  - Name: Seller
+    Domain: seller.dmarket.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Bank
+    Domain: bank.dmarket.com
+    EnableNodeOUs: true
     Template:
       Count: 1
     Users:

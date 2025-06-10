@@ -5,7 +5,7 @@
 ################################################################################
 General:
   BootstrapMethod: file
-  BootstrapFile: /var/hyperledger/config/confectionary-genesis.block
+  BootstrapFile: /var/hyperledger/config/dmarketgenesis.block
 
   BCCSP:
     Default: SW

@@ -9,10 +9,64 @@ Capabilities:
 
 # Organizations
 Organizations:
+  - &Buyer
+    Name: Buyer
+    ID: BuyerMSP
+    MSPDir: ./crypto-config/peerOrganizations/buyer.dmarket.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BuyerMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BuyerMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BuyerMSP.admin')"
+    AnchorPeers:
+      - Host: buyer.dmarket.com
+        Port: 7051
+
+  - &Seller
+    Name: Seller
+    ID: SellerMSP
+    MSPDir: ./crypto-config/peerOrganizations/seller.dmarket.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('SellerMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('SellerMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('SellerMSP.admin')"
+    AnchorPeers:
+      - Host: seller.dmarket.com
+        Port: 8051
+
+  - &Bank
+    Name: Bank
+    ID: BankMSP
+    MSPDir: ./crypto-config/peerOrganizations/bank.dmarket.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BankMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BankMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BankMSP.admin')"
+    AnchorPeers:
+      - Host: bank.dmarket.com
+        Port: 9051
+
   - &Orderer
     Name: Orderer
     ID: OrdererMSP
-    MSPDir: ./crypto-config/ordererOrganizations/confectionary.com/msp
+    MSPDir: ./crypto-config/ordererOrganizations/dmarket.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -23,80 +77,12 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('OrdererMSP.admin')"
-      Endorsement:
-        Type: Signature
-        Rule: "OR('OrdererMSP.member')"
-
-  - &Org1
-    Name: Org1
-    ID: Org1MSP
-    MSPDir: ./crypto-config/peerOrganizations/confectionary.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('Org1MSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('Org1MSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('Org1MSP.admin')"
-      Endorsement:
-        Type: Signature
-        Rule: "OR('Org1MSP.member')"
-    AnchorPeers:
-      - Host: shop1
-        Port: 7051
-      - Host: shop2
-        Port: 7051
-
-  - &Org2
-    Name: Org2
-    ID: Org2MSP
-    MSPDir: ./crypto-config/peerOrganizations/flourmill.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('Org2MSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('Org2MSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('Org2MSP.admin')"
-      Endorsement:
-        Type: Signature
-        Rule: "OR('Org2MSP.member')"
-    AnchorPeers:
-      - Host: mill
-        Port: 7051
-
-  - &Org3
-    Name: Org3
-    ID: Org3MSP
-    MSPDir: ./crypto-config/peerOrganizations/bakingstuff/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('Org3MSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('Org3MSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('Org3MSP.admin')"
-      Endorsement:
-        Type: Signature
-        Rule: "OR('Org3MSP.member')"
-    AnchorPeers:
-      - Host: ovens
-        Port: 7051
 
 # Orderer
 Orderer: &OrdererDefaults
   OrdererType: solo
   Addresses:
-    - orderer.confectionary.com:7050
+    - orderer.dmarket.com:7050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10
@@ -177,24 +163,24 @@ Channel: &ChannelDefaults
 
 # Profiles
 Profiles:
-  ConfectionaryOrdererGenesis:
+  DMarketOrdererGenesis:
     <<: *ChannelDefaults
     Orderer:
       <<: *OrdererDefaults
       Organizations:
         - <<: *Orderer
     Consortiums:
-      ConfectionaryConsortium:
+      DMarketConsortium:
         Organizations:
-          - <<: *Org1
-          - <<: *Org2
-          - <<: *Org3
-  ConfectionaryChannel:
+          - <<: *Buyer
+          - <<: *Seller
+          - <<: *Bank
+  DMarketChannel:
     <<: *ChannelDefaults
-    Consortium: ConfectionaryConsortium
+    Consortium: DMarketConsortium
     Application:
       <<: *ApplicationDefaults
       Organizations:
-        - <<: *Org1
-        - <<: *Org2
-        - <<: *Org3
+        - <<: *Buyer
+        - <<: *Seller
+        - <<: *Bank
