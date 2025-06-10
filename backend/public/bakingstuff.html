@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bakingstuff</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Cake Approval System</h1>
+  <div class="navbar">
+    <a href="index.html">Initialize</a>
+    <a href="confectionary.html">Confectionary</a>
+    <a href="flourmill.html">Flourmill</a>
+    <a href="bakingstuff.html">Bakingstuff</a>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Approve Oven</div>
+    <form id="approveOvenForm">
+      <input type="text" id="ovenCakeId" placeholder="Cake ID" required />
+      <button type="submit">Approve Oven</button>
+    </form>
+  </div>
+
+  <div class="section" id="cakeDisplay">
+    <div class="section-title">Cake Details</div>
+    <pre id="cakeData">No cake selected.</pre>
+  </div>
+
+  <script>
+    const baseUrl = 'http://localhost:3000';
+
+    function fetchAndDisplayCake(cakeID) {
+      fetch(`${baseUrl}/api/getCake/${cakeID}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('cakeData').textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(() => {
+          document.getElementById('cakeData').textContent = "Error fetching cake.";
+        });
+    }
+
+    document.getElementById('approveOvenForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const cakeID = document.getElementById('ovenCakeId').value;
+
+      const res = await fetch(`${baseUrl}/api/ApproveOven/${cakeID}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      alert(await res.text());
+      fetchAndDisplayCake(cakeID);
+    };
+  </script>
+</body>
+</html>

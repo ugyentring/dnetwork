@@ -1,0 +1,60 @@
+{
+    "name": "ConfectionaryConsortium",
+    "version": "1.0.0",
+    "channels": {
+        "confectionarychannel": {
+            "orderers": [
+                "orderer.confectionary.com"
+            ],
+            "peers": {
+                "shop1.confectionary.com": {},
+                "shop2.confectionary.com": {},
+                "mill.flourmill.com": {},
+                "ovens.bakingstuff.com": {}
+            }
+        }
+    },
+    "organizations": {
+        "Org1": {
+            "mspid": "Org1MSP",
+            "peers": [
+                "shop1.confectionary.com",
+                "shop2.confectionary.com"
+            ]
+        },
+        "Org2": {
+            "mspid": "Org2MSP",
+            "peers": [
+                "mill.flourmill.com"
+            ]
+        },
+        "Org3": {
+            "mspid": "Org3MSP",
+            "peers": [
+                "ovens.bakingstuff.com"
+            ]
+        }
+    },
+    "orderers": {
+        "orderer.confectionary.com": {
+            "url": "grpc://orderer.confectionary.com:7050",
+            "grpcOptions": {
+                "ssl-target-name-override": "orderer.confectionary.com"
+            }
+        }
+    },
+    "peers": {
+        "shop1.confectionary.com": {
+            "url": "grpc://shop1.confectionary.com:7051"
+        },
+        "shop2.confectionary.com": {
+            "url": "grpc://shop2.confectionary.com:7051"
+        },
+        "mill.flourmill.com": {
+            "url": "grpc://mill.flourmill.com:7051"
+        },
+        "ovens.bakingstuff.com": {
+            "url": "grpc://ovens.bakingstuff.com:7051"
+        }
+    }
+}

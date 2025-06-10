@@ -1,0 +1,84 @@
+{
+  "name": "test-network",
+  "version": "1.0.0",
+  "client": {
+    "tlsEnable": false,
+    "adminCredential": {
+      "id": "admin",
+      "password": "admin"
+    },
+    "enableAuthentication": false,
+    "organization": "Org1MSP",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+  "channels": {
+    "confectionarychannel": {
+      "peers": {
+        "shop1.confectionary.com": {},
+        "shop2.confectionary.com": {},
+        "mill.flourmill.com": {},
+        "ovens.bakingstuff.com": {}
+      }
+    }
+  },
+  "organizations": {
+    "Org1MSP": {
+      "mspid": "Org1MSP",
+      "adminPrivateKey": {
+        "path": "/config/crypto-config/peerOrganizations/confectionary.com/users/Admin@confectionary.com/msp/keystore/priv_sk"
+      },
+      "signedCert": {
+        "path": "/config/crypto-config/peerOrganizations/confectionary.com/users/Admin@confectionary.com/msp/signcerts/Admin@confectionary.com-cert.pem"
+      },
+      "peers": [
+        "shop1.confectionary.com",
+        "shop2.confectionary.com"
+      ]
+    },
+    "Org2MSP": {
+      "mspid": "Org2MSP",
+      "adminPrivateKey": {
+        "path": "/config/crypto-config/peerOrganizations/flourmill.com/users/Admin@flourmill.com/msp/keystore/priv_sk"
+      },
+      "signedCert": {
+        "path": "/config/crypto-config/peerOrganizations/flourmill.com/users/Admin@flourmill.com/msp/signcerts/Admin@flourmill.com-cert.pem"
+      },
+      "peers": [
+        "mill.flourmill.com"
+      ]
+    },
+    "Org3MSP": {
+      "mspid": "Org3MSP",
+      "adminPrivateKey": {
+        "path": "/config/crypto-config/peerOrganizations/bakingstuff/users/Admin@bakingstuff/msp/keystore/priv_sk"
+      },
+      "signedCert": {
+        "path": "/config/crypto-config/peerOrganizations/bakingstuff/users/Admin@bakingstuff/msp/signcerts/Admin@bakingstuff-cert.pem"
+      },
+      "peers": [
+        "ovens.bakingstuff.com"
+      ]
+    }
+  },
+  "peers": {
+    "shop1.confectionary.com": {
+      "url": "grpc://shop1.confectionary.com:7051"
+    },
+    "shop2.confectionary.com": {
+      "url": "grpc://shop2.confectionary.com:7051"
+    },
+    "mill.flourmill.com": {
+      "url": "grpc://mill.flourmill.com:7051"
+    },
+    "ovens.bakingstuff.com": {
+      "url": "grpc://ovens.bakingstuff.com:7051"
+    }
+  }
+}
