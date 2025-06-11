@@ -55,8 +55,8 @@ services:
     command: peer node start
     volumes:
       - ${PWD}/config/buyer:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/buyer.dmarket.com/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/buyer.dmarket.com/peers/buyer/tls:/var/hyperledger/tls
+      - ${PWD}/config/crypto-config/peerOrganizations/buyer.dmarket.com/peers/peer0.buyer.dmarket.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/buyer.dmarket.com/peers/peer0.buyer.dmarket.com/tls:/var/hyperledger/tls
       - /var/run/:/var/run/
       - data-buyer.dmarket.com:/var/hyperledger/production
     depends_on:
@@ -78,8 +78,8 @@ services:
     command: peer node start
     volumes:
       - ${PWD}/config/seller:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/seller/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/seller/tls:/var/hyperledger/tls
+      - ${PWD}/config/crypto-config/peerOrganizations/seller.dmarket.com/peers/peer0.seller.dmarket.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/seller.dmarket.com/peers/peer0.seller.dmarket.com/tls:/var/hyperledger/tls
       - /var/run/:/var/run/
       - data-seller.dmarket.com:/var/hyperledger/production
     depends_on:
@@ -101,8 +101,8 @@ services:
     command: peer node start
     volumes:
       - ${PWD}/config/bank:/var/hyperledger/config
-      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/bank/msp:/var/hyperledger/msp
-      - ${PWD}/config/crypto-config/peerOrganizations/dmarket.com/peers/bank/tls:/var/hyperledger/tls
+      - ${PWD}/config/crypto-config/peerOrganizations/bank.dmarket.com/peers/peer0.bank.dmarket.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/bank.dmarket.com/peers/peer0.bank.dmarket.com/tls:/var/hyperledger/tls
       - /var/run/:/var/run/
       - data-bank.dmarket.com:/var/hyperledger/production
     depends_on:
@@ -112,3 +112,4 @@ services:
       - 9052:7052
     networks:
       - dmarket-nets
+
