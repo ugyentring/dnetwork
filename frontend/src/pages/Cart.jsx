@@ -1,9 +1,40 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { loadStripe } from "@stripe/stripe-js";
+import { toast } from "react-toastify";
 
 export default function Cart() {
   const { cartItems, removeFromCart, cartTotal } = useCart();
+
+
+  const stripePromise = loadStripe("pk_test_51RYuFsP8DOyKgPaeVxy9t0bCHkJ6o2NaumJhvdTeexMNgT978mS12bnX5up7u7GQ41y9Na0lyGccB4HXxPEdLUPw00CpbdX0xI");
+  
+  //stripe handling checkout
+  async function handleCheckout(cartItems) {
+    // Map cartItems to expected format for backend (id, name, price, quantity)
+    const items = cartItems.map(item => ({
+      id: item.product.id,
+      name: item.product.name,
+      price: item.product.price,
+      quantity: item.quantity,
+    }));
+    try {
+      const res = await fetch("http://localhost:5000/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartItems: items }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to initiate checkout.");
+      }
+    } catch (err) {
+      toast.error("Checkout error: " + err.message);
+    }
+  }
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -25,7 +56,7 @@ export default function Cart() {
           <div className="lg:col-span-2">
             {cartItems.map((item) => (
               <div
-                key={item.product._id}
+                key={item.product.id}
                 className="flex items-center border-b py-4"
               >
                 <img
@@ -36,12 +67,12 @@ export default function Cart() {
                 <div className="flex-1">
                   <h3 className="font-semibold">{item.product.name}</h3>
                   <p className="text-gray-600">
-                    ${item.product.price.toFixed(2)}
+                    ${Number(item.product.price).toFixed(2)}
                   </p>
                   <div className="flex items-center space-x-4 mt-2">
                     <span>Qty: {item.quantity}</span>
                     <button
-                      onClick={() => removeFromCart(item.product._id)}
+                      onClick={() => removeFromCart(item.product.id)}
                       className="text-red-600 hover:text-red-800 text-sm"
                     >
                       Remove
@@ -59,7 +90,9 @@ export default function Cart() {
               <span>Total:</span>
               <span className="font-semibold">${cartTotal.toFixed(2)}</span>
             </div>
-            <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+            <button 
+            onClick={() => handleCheckout(cartItems)}
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
               Proceed to Checkout
             </button>
           </div>
