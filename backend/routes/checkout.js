@@ -5,7 +5,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 router.post("/create-checkout-session", async (req, res) => {
   try {
+    console.log("[Stripe Checkout] Incoming cartItems:", req.body.cartItems);
     const { cartItems } = req.body;
+    // Validate prices
+    for (const item of cartItems) {
+      console.log(`Item: ${item.name}, Price: ${item.price}, Type: ${typeof item.price}`);
+      if (isNaN(Number(item.price))) {
+        return res.status(400).json({ error: `Invalid price for item '${item.name}': ${item.price}` });
+      }
+    }
     const line_items = cartItems.map(item => ({
       price_data: {
         currency: "usd",
@@ -27,7 +35,8 @@ router.post("/create-checkout-session", async (req, res) => {
 
     res.json({ url: session.url });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("[Stripe Checkout] Error:", err);
+    res.status(500).json({ error: err.message, details: err });
   }
 });
 

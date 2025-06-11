@@ -10,16 +10,22 @@ export default function Cart() {
   
   //stripe handling checkout
   async function handleCheckout(cartItems) {
-  const res = await fetch("http://localhost:5000/api/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cartItems }),
-  });
-  const data = await res.json();
-  if (data.url) {
-    window.location.href = data.url;
+    // Map cart items to expected shape for backend
+    const mappedItems = cartItems.map(item => ({
+      name: item.product.name,
+      price: item.product.price,
+      quantity: item.quantity,
+    }));
+    const res = await fetch("http://localhost:5000/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cartItems: mappedItems }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    }
   }
-}
 
 
   return (
@@ -42,7 +48,7 @@ export default function Cart() {
           <div className="lg:col-span-2">
             {cartItems.map((item) => (
               <div
-                key={item.product._id}
+                key={item.product.id}
                 className="flex items-center border-b py-4"
               >
                 <img
@@ -53,12 +59,12 @@ export default function Cart() {
                 <div className="flex-1">
                   <h3 className="font-semibold">{item.product.name}</h3>
                   <p className="text-gray-600">
-                    ${item.product.price.toFixed(2)}
+                    ${Number(item.product.price).toFixed(2)}
                   </p>
                   <div className="flex items-center space-x-4 mt-2">
                     <span>Qty: {item.quantity}</span>
                     <button
-                      onClick={() => removeFromCart(item.product._id)}
+                      onClick={() => removeFromCart(item.product.id)}
                       className="text-red-600 hover:text-red-800 text-sm"
                     >
                       Remove
