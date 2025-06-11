@@ -1,25 +1,27 @@
-const express = require('express'); 
-const { Gateway, Wallets } = require('fabric-network'); 
-const fs = require('fs'); 
-const path = require('path'); 
- 
-const app = express(); 
-app.use(express.json());
+import express from 'express';
+import { Gateway, Wallets } from 'fabric-network';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-app.use(express.static(path.join(__dirname, "public")));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 const getIdentityForOrg = (org) => {
   switch (org) {
-    case 'shop1':
-    case 'shop2':
+    case 'buyer':
+      return 'Admin@buyer.dmarket.com';
+    case 'seller':
+      return 'Admin@seller.dmarket.com';
+    case 'bank':
+      return 'Admin@bank.dmarket.com';
     case 'any':
-      return 'Admin@confectionary.com';
-    case 'mill':
-    case 'any':
-      return 'Admin@flourmill.com';
-    case 'oven':
-    case 'any':
-      return 'Admin@bakingstuff';
+      // Default to seller for read-only queries
+      return 'Admin@seller.dmarket.com';
     default:
       throw new Error(`Unknown organization: ${org}`);
   }
@@ -28,33 +30,26 @@ const getIdentityForOrg = (org) => {
 // Get contract for the specified organization
 async function getContract(org) {
   try {
-    const walletPath = path.join(process.cwd(), "wallet");
+    const walletPath = path.join(process.cwd(), 'wallet');
     const wallet = await Wallets.newFileSystemWallet(walletPath);
-    const identity = await wallet.get(getIdentityForOrg(org));
-    console.log("Iden" + identity)
-
+    const identityLabel = getIdentityForOrg(org);
+    const identity = await wallet.get(identityLabel);
     if (!identity) {
       throw new Error(`Identity for ${org} not found in wallet`);
     }
-
     const gateway = new Gateway();
     const connectionProfile = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, "connection.json"), "utf8")
+      fs.readFileSync(path.resolve(__dirname, 'connection.json'), 'utf8')
     );
-
     const connectionOptions = {
       wallet,
-      identity: identity,
+      identity: identityLabel,
       discovery: { enabled: false, asLocalhost: true },
     };
-
     await gateway.connect(connectionProfile, connectionOptions);
-    const network = await gateway.getNetwork("confectionarychannel");
-    const contract = network.getContract("cakechain");
-
-    // Store gateway in the contract object for later disconnection
+    const network = await gateway.getNetwork('dmarketchannel');
+    const contract = network.getContract('productchain');
     contract.gateway = gateway;
-    console.log(contract);
     return contract;
   } catch (error) {
     console.error(`Failed to get contract: ${error}`);
@@ -68,19 +63,14 @@ async function submitTransaction(org, functionName, ...args) {
   try {
     contract = await getContract(org);
     const result = await contract.submitTransaction(functionName, ...args);
-
-    // For Go chaincode, we need to parse the result if it's a JSON string
     if (result && result.length > 0) {
       try {
-        // Try to parse as JSON first
         return JSON.stringify(JSON.parse(result.toString()));
       } catch (e) {
-        // If not valid JSON, return as string
         return result.toString();
       }
     }
-    console.log("Nothing")
-    return "{}"; // Return empty object if no result
+    return '{}';
   } catch (error) {
     console.error(`Failed to submit transaction: ${error}`);
     throw error;
@@ -97,19 +87,14 @@ async function evaluateTransaction(org, functionName, ...args) {
   try {
     contract = await getContract(org);
     const result = await contract.evaluateTransaction(functionName, ...args);
-    console.log("evaluate Transcation: " + result.toString());
-    // For Go chaincode, we need to parse the result if it's a JSON string
     if (result && result.length > 0) {
       try {
-        // Try to parse as JSON first
         return JSON.stringify(JSON.parse(result.toString()));
       } catch (e) {
-        // If not valid JSON, return as string
         return result.toString();
       }
     }
-    console.log("Nothing")
-    return "{}"; // Return empty object if no result
+    return '{}';
   } catch (error) {
     console.error(`Failed to evaluate transaction: ${error}`);
     throw error;
@@ -120,63 +105,84 @@ async function evaluateTransaction(org, functionName, ...args) {
   }
 }
 
-
-app.post('/api/createCake', async (req, res) => {
-    try{
-        const{
-            id,
-            name
-        } = req.body;
-
-        const result = await submitTransaction('shop1', 'InitCake', id, name);
-        res.status(201).json(JSON.parse(result));
-} catch (error) {
-        console.error(`Error creating cake: ${error}`);
-        res.status(500).json({ error: `Failed to create cake: ${error.message}` }); 
-    }
+// Example productchain endpoints
+app.post('/api/createProduct', async (req, res) => {
+  try {
+    const { id, name, description, image, price, stock } = req.body;
+    const createdAt = new Date().toISOString();
+    // productchain.go expects: id, name, description, image, createdAt (all string), price (float64), stock (int)
+    // All args to submitTransaction must be strings, so convert price and stock
+    const result = await submitTransaction(
+      'seller',
+      'CreateProduct',
+      id,
+      name,
+      description,
+      image,
+      createdAt,
+      parseFloat(price).toString(),
+      parseInt(stock).toString()
+    );
+    res.status(201).json(JSON.parse(result));
+  } catch (error) {
+    console.error(`Error creating product: ${error}`);
+    res.status(500).json({ error: `Failed to create product: ${error.message}` });
+  }
 });
 
-app.get('/api/getCake/:id', async(req, res)=>{
-    try{
-        const { id } = req.params;
-        const result = await evaluateTransaction('any', 'GetCake', id);
-        res.status(200).json(JSON.parse(result));
-    } catch(error){
-        console.error(`Error getting cake: ${error}`);
-        res.status(500).json({ error: `Failed to get cake: ${error.message}` });
-    }
-})
+app.get('/api/getProduct/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await evaluateTransaction('any', 'GetProduct', id);
+    res.status(200).json(JSON.parse(result));
+  } catch (error) {
+    console.error(`Error getting product: ${error}`);
+    res.status(500).json({ error: `Failed to get product: ${error.message}` });
+  }
+});
 
-app.put('/api/approveFlour/:id', async(req, res)=>{
-    try{
-        const { id } = req.params;
-        const result = await submitTransaction('mill', 'ApproveFlour', id);
-        res.status(200).json(JSON.parse(result));
-    } catch(error){
-        console.error(`Error approving flour: ${error}`);
-        res.status(500).json({ error: `Failed to approve flour: ${error.message}` });
-    }
-})
+app.put('/api/updateProduct/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, image, price, stock } = req.body;
+    // productchain.go expects: id, name, description, image, price (float64), stock (int)
+    const result = await submitTransaction(
+      'seller',
+      'UpdateProduct',
+      id,
+      name,
+      description,
+      image,
+      parseFloat(price).toString(),
+      parseInt(stock).toString()
+    );
+    res.status(200).json(JSON.parse(result));
+  } catch (error) {
+    console.error(`Error updating product: ${error}`);
+    res.status(500).json({ error: `Failed to update product: ${error.message}` });
+  }
+});
 
-app.put('/api/approveOven/:id', async(req, res)=>{
-    try{
-        const { id } = req.params;
-        const result = await submitTransaction('oven', 'ApproveOven', id);
-        res.status(200).json(JSON.parse(result));
-    } catch(error){
-        console.error(`Error approving oven: ${error}`);
-        res.status(500).json({ error: `Failed to approve oven: ${error.message}` });
-    }
-})
+app.delete('/api/deleteProduct/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await submitTransaction('seller', 'DeleteProduct', id);
+    res.status(200).json(JSON.parse(result));
+  } catch (error) {
+    console.error(`Error deleting product: ${error}`);
+    res.status(500).json({ error: `Failed to delete product: ${error.message}` });
+  }
+});
 
-app.put('/api/approveShop/:id', async(req, res)=>{
-    try{
-        const { id } = req.params;
-        const result = await submitTransaction('shop1', 'ApproveShop', id);
-        res.status(200).json(JSON.parse(result));
-    } catch(error){
-        console.error(`Error approving shop: ${error}`);
-        res.status(500).json({ error: `Failed to approve shop: ${error.message}` });
-    }
-})
-module.exports = app;
+app.get('/api/getAllProducts', async (req, res) => {
+  try {
+    const result = await evaluateTransaction('any', 'GetAllProducts');
+    res.status(200).json(JSON.parse(result));
+  } catch (error) {
+    console.error(`Error getting all products: ${error}`);
+    res.status(500).json({ error: `Failed to get all products: ${error.message}` });
+  }
+});
+
+export { submitTransaction, evaluateTransaction };
+export default app;

@@ -1,60 +1,64 @@
 {
-    "name": "ConfectionaryConsortium",
-    "version": "1.0.0",
-    "channels": {
-        "confectionarychannel": {
-            "orderers": [
-                "orderer.confectionary.com"
-            ],
-            "peers": {
-                "shop1.confectionary.com": {},
-                "shop2.confectionary.com": {},
-                "mill.flourmill.com": {},
-                "ovens.bakingstuff.com": {}
-            }
-        }
-    },
-    "organizations": {
-        "Org1": {
-            "mspid": "Org1MSP",
-            "peers": [
-                "shop1.confectionary.com",
-                "shop2.confectionary.com"
-            ]
-        },
-        "Org2": {
-            "mspid": "Org2MSP",
-            "peers": [
-                "mill.flourmill.com"
-            ]
-        },
-        "Org3": {
-            "mspid": "Org3MSP",
-            "peers": [
-                "ovens.bakingstuff.com"
-            ]
-        }
-    },
-    "orderers": {
-        "orderer.confectionary.com": {
-            "url": "grpc://orderer.confectionary.com:7050",
-            "grpcOptions": {
-                "ssl-target-name-override": "orderer.confectionary.com"
-            }
-        }
-    },
-    "peers": {
-        "shop1.confectionary.com": {
-            "url": "grpc://shop1.confectionary.com:7051"
-        },
-        "shop2.confectionary.com": {
-            "url": "grpc://shop2.confectionary.com:7051"
-        },
-        "mill.flourmill.com": {
-            "url": "grpc://mill.flourmill.com:7051"
-        },
-        "ovens.bakingstuff.com": {
-            "url": "grpc://ovens.bakingstuff.com:7051"
-        }
+  "name": "DMarketConsortium",
+  "version": "1.0.0",
+  "channels": {
+    "dmarketchannel": {
+      "orderers": [
+        "orderer.dmarket.com"
+      ],
+      "peers": {
+        "seller.dmarket.com": {},
+        "buyer.dmarket.com": {},
+        "bank.dmarket.com": {}
+      }
     }
+  },
+  "organizations": {
+    "Buyer": {
+      "mspid": "BuyerMSP",
+      "peers": [
+        "buyer.dmarket.com"
+      ]
+    },
+    "Seller": {
+      "mspid": "SellerMSP",
+      "peers": [
+        "seller.dmarket.com"
+      ]
+    },
+    "Bank": {
+      "mspid": "BankMSP",
+      "peers": [
+        "bank.dmarket.com"
+      ]
+    }
+  },
+  "orderers": {
+    "orderer.dmarket.com": {
+      "url": "grpc://orderer.dmarket.com:7050",
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.dmarket.com"
+      }
+    }
+  },
+  "peers": {
+    "buyer.dmarket.com": {
+      "url": "grpc://buyer.dmarket.com:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "buyer.dmarket.com"
+      }
+    },
+    "seller.dmarket.com": {
+      "url": "grpc://seller.dmarket.com:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "seller.dmarket.com"
+      }
+    },
+    "bank.dmarket.com": {
+      "url": "grpc://bank.dmarket.com:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "bank.dmarket.com"
+      }
+    }
+  }
 }

@@ -57,7 +57,7 @@ async function main() {
 }
 
 /** 
- * @param   string  Organization = confectionary or bakingstuff or flourmill
+ * @param   string  Organization = buyer, seller, bank
  * @param   string  User  = Admin   User1   that need to be added 
  */
 async function addToWallet(org, user) {
@@ -99,6 +99,7 @@ async function addToWallet(org, user) {
     await wallet.put(identityLabel, identity);
     console.log(`Successfully added user "${identityLabel}" to the wallet`);
 }
+
 /** 
  * Lists/Prints the identities in the wallet 
  */
@@ -138,21 +139,20 @@ async function exportIdentity(org, user) {
 * @param {string} user  
 */
 function readCertCryptogen(org, user) {
-    var certPath = CRYPTO_CONFIG_PEER_ORGS + "/" + org + ".com/users/" + user + "@" + org +
-        ".com/msp/signcerts/" + user + "@" + org + ".com-cert.pem"
+    var certPath = `${CRYPTO_CONFIG_PEER_ORGS}/${org}.dmarket.com/users/${user}@${org}.dmarket.com/msp/signcerts/${user}@${org}.dmarket.com-cert.pem`;
     const cert = fs.readFileSync(certPath).toString();
-    return cert
+    return cert;
 }
+
 /** 
 * Reads the content of users private key 
 * @param {string} org  
 * @param {string} user  
 */
 function readPrivateKeyCryptogen(org, user) {
-    var pkFolder = CRYPTO_CONFIG_PEER_ORGS + "/" + org + ".com/users/" + user + "@" + org +
-        ".com/msp/keystore"
+    var pkFolder = `${CRYPTO_CONFIG_PEER_ORGS}/${org}.dmarket.com/users/${user}@${org}.dmarket.com/msp/keystore`;
     let pkfile = fs.readdirSync(pkFolder)[0];
-    return fs.readFileSync(pkFolder + "/" + pkfile).toString()
+    return fs.readFileSync(pkFolder + "/" + pkfile).toString();
 }
 
 /** 
@@ -161,7 +161,8 @@ function readPrivateKeyCryptogen(org, user) {
  * @param {string} org  
  */
 function createMSPId(org) {
-    return org.charAt(0).toUpperCase() + org.slice(1) + 'MSP'
+    // Capitalize first letter and append MSP
+    return org.charAt(0).toUpperCase() + org.slice(1) + 'MSP';
 }
 
 /** 
@@ -171,5 +172,5 @@ function createMSPId(org) {
  * @param {string} user  
  */
 function createIdentityLabel(org, user) {
-    return user + '@' + org + '.com';
+    return user + '@' + org + '.dmarket.com';
 }

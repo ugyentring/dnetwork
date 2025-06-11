@@ -25,7 +25,7 @@ export default function AdminDashboard() {
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       await deleteProduct(productId);
-      setProducts(products.filter((p) => p._id !== productId));
+      setProducts(products.filter((p) => p.id !== productId));
     }
   };
 
@@ -64,19 +64,19 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {products.map((product) => (
-                <tr key={product._id} className="border-t">
+                <tr key={product.id} className="border-t">
                   <td className="px-6 py-4">{product.name}</td>
-                  <td className="px-6 py-4">${product.price.toFixed(2)}</td>
+                  <td className="px-6 py-4">${Number(product.price).toFixed(2)}</td>
                   <td className="px-6 py-4">{product.stock}</td>
                   <td className="px-6 py-4 space-x-2">
                     <Link
-                      to={`/admin/products/edit/${product._id}`}
+                      to={`/admin/products/edit/${product.id}`}
                       className="text-blue-600 hover:text-blue-800"
                     >
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDelete(product._id)}
+                      onClick={() => handleDelete(product.id)}
                       className="text-red-600 hover:text-red-800"
                     >
                       Delete

@@ -41,6 +41,7 @@ export default function ProductForm({ editMode }) {
         await updateProduct(id, formData);
       } else {
         await createProduct(formData);
+        alert("Product added successfully!");
       }
       navigate("/admin");
     } catch (err) {
