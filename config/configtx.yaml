@@ -94,7 +94,7 @@ Organizations:
 Orderer: &OrdererDefaults
   OrdererType: solo
   Addresses:
-    - orderer.ordererservice.bt:7050
+    - orderer.dmarket.com:7050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10

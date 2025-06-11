@@ -19,8 +19,8 @@ export ORDERER_ADDRESS=orderer.dmarket.com:7050
 export CORE_PEER_TLS_ENABLED=false
 
 # Chaincode
-export CC_NAME="cakechain"
-export CC_PATH="./chaincodes/cakechain/"
+export CC_NAME="productchain"
+export CC_PATH="./chaincodes/productchain/"
 export CC_CHANNEL_ID="dmarketchannel"
 export CC_LANGUAGE="golang"
 
