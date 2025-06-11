@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getProducts, deleteProduct } from "../services/product";
+import { toast } from "react-toastify";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -26,7 +27,12 @@ export default function AdminDashboard() {
     if (window.confirm("Are you sure you want to delete this product?")) {
       await deleteProduct(productId);
       setProducts(products.filter((p) => p.id !== productId));
+      toast.error("Product deleted successfully!", { autoClose: 2000 });
     }
+  };
+
+  const handleEdit = (productId) => {
+    toast.warn("Edit product feature coming soon!", { autoClose: 2000 });
   };
 
   if (!user || user.role !== "admin") {
@@ -72,6 +78,7 @@ export default function AdminDashboard() {
                     <Link
                       to={`/admin/products/edit/${product.id}`}
                       className="text-blue-600 hover:text-blue-800"
+                      onClick={() => handleEdit(product.id)}
                     >
                       Edit
                     </Link>

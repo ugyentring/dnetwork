@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getProductById } from "../services/product";
 import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -79,7 +80,10 @@ export default function ProductDetail() {
           </div>
 
           <button
-            onClick={() => addToCart(product)}
+            onClick={() => {
+              addToCart(product);
+              toast.success("Product added to cart!", { autoClose: 2000 });
+            }}
             disabled={product.stock <= 0}
             className={`w-full py-2 px-4 rounded ${
               product.stock > 0

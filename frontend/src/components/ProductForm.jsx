@@ -5,6 +5,7 @@ import {
   updateProduct,
   getProductById,
 } from "../services/product";
+import { toast } from "react-toastify";
 
 export default function ProductForm({ editMode }) {
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ export default function ProductForm({ editMode }) {
         await updateProduct(id, formData);
       } else {
         await createProduct(formData);
-        alert("Product added successfully!");
+        toast.success("Product added successfully!");
       }
       navigate("/admin");
     } catch (err) {
