@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function ProductCard({ product }) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <Link to={`/products/${product._id}`} className="block">
+      <Link to={`/products/${product.id}`} className="block">
         <img
           src={product.image || "/images/default-product.jpg"}
           alt={product.name}

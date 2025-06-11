@@ -26,7 +26,17 @@ export default function ProductList() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <div key={product.id}>
+              <ProductCard product={product} />
+              <div className="mt-2">
+                <button
+                  className="text-blue-600 underline text-sm"
+                  onClick={() => alert(JSON.stringify(product, null, 2))}
+                >
+                  View Blockchain Details
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       )}

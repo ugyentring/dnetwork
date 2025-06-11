@@ -54,7 +54,7 @@ export default function ProductDetail() {
         <div className="space-y-4">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p className="text-2xl font-semibold text-blue-600">
-            ${product.price.toFixed(2)}
+            ${Number(product.price).toFixed(2)}
           </p>
 
           <div className="flex items-center space-x-2">
@@ -72,6 +72,11 @@ export default function ProductDetail() {
           </div>
 
           <p className="text-gray-700 leading-relaxed">{product.description}</p>
+
+          <div className="text-xs text-gray-400">
+            <div>Product ID: {product.id}</div>
+            <div>Created At: {product.createdAt}</div>
+          </div>
 
           <button
             onClick={() => addToCart(product)}
