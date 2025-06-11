@@ -1,5 +1,5 @@
 {
-  "name": "test-network",
+  "name": "dmarket-network",
   "version": "1.0.0",
   "client": {
     "tlsEnable": false,
@@ -8,7 +8,7 @@
       "password": "admin"
     },
     "enableAuthentication": false,
-    "organization": "Org1MSP",
+    "organization": "BuyerMSP",
     "connection": {
       "timeout": {
         "peer": {
@@ -19,66 +19,66 @@
     }
   },
   "channels": {
-    "confectionarychannel": {
+    "dmarketchannel": {
       "peers": {
-        "shop1.confectionary.com": {},
-        "shop2.confectionary.com": {},
-        "mill.flourmill.com": {},
-        "ovens.bakingstuff.com": {}
+        "buyer.dmarket.com": {},
+        "seller.dmarket.com": {},
+        "bank.dmarket.com": {}
       }
     }
   },
   "organizations": {
-    "Org1MSP": {
-      "mspid": "Org1MSP",
+    "BuyerMSP": {
+      "mspid": "BuyerMSP",
       "adminPrivateKey": {
-        "path": "/config/crypto-config/peerOrganizations/confectionary.com/users/Admin@confectionary.com/msp/keystore/priv_sk"
+        "path": "/config/crypto-config/peerOrganizations/buyer.dmarket.com/users/Admin@buyer.dmarket.com/msp/keystore/priv_sk"
       },
       "signedCert": {
-        "path": "/config/crypto-config/peerOrganizations/confectionary.com/users/Admin@confectionary.com/msp/signcerts/Admin@confectionary.com-cert.pem"
+        "path": "/config/crypto-config/peerOrganizations/buyer.dmarket.com/users/Admin@buyer.dmarket.com/msp/signcerts/Admin@buyer.dmarket.com-cert.pem"
       },
       "peers": [
-        "shop1.confectionary.com",
-        "shop2.confectionary.com"
+        "buyer.dmarket.com"
       ]
     },
-    "Org2MSP": {
-      "mspid": "Org2MSP",
+    "SellerMSP": {
+      "mspid": "SellerMSP",
       "adminPrivateKey": {
-        "path": "/config/crypto-config/peerOrganizations/flourmill.com/users/Admin@flourmill.com/msp/keystore/priv_sk"
+        "path": "/config/crypto-config/peerOrganizations/seller.dmarket.com/users/Admin@seller.dmarket.com/msp/keystore/priv_sk"
       },
       "signedCert": {
-        "path": "/config/crypto-config/peerOrganizations/flourmill.com/users/Admin@flourmill.com/msp/signcerts/Admin@flourmill.com-cert.pem"
+        "path": "/config/crypto-config/peerOrganizations/seller.dmarket.com/users/Admin@seller.dmarket.com/msp/signcerts/Admin@seller.dmarket.com-cert.pem"
       },
       "peers": [
-        "mill.flourmill.com"
+        "seller.dmarket.com"
       ]
     },
-    "Org3MSP": {
-      "mspid": "Org3MSP",
+    "BankMSP": {
+      "mspid": "BankMSP",
       "adminPrivateKey": {
-        "path": "/config/crypto-config/peerOrganizations/bakingstuff/users/Admin@bakingstuff/msp/keystore/priv_sk"
+        "path": "/config/crypto-config/peerOrganizations/bank.dmarket.com/users/Admin@bank.dmarket.com/msp/keystore/priv_sk"
       },
       "signedCert": {
-        "path": "/config/crypto-config/peerOrganizations/bakingstuff/users/Admin@bakingstuff/msp/signcerts/Admin@bakingstuff-cert.pem"
+        "path": "/config/crypto-config/peerOrganizations/bank.dmarket.com/users/Admin@bank.dmarket.com/msp/signcerts/Admin@bank.dmarket.com-cert.pem"
       },
       "peers": [
-        "ovens.bakingstuff.com"
+        "bank.dmarket.com"
       ]
     }
   },
   "peers": {
-    "shop1.confectionary.com": {
-      "url": "grpc://shop1.confectionary.com:7051"
+    "buyer.dmarket.com": {
+      "url": "grpc://buyer.dmarket.com:7051"
     },
-    "shop2.confectionary.com": {
-      "url": "grpc://shop2.confectionary.com:7051"
+    "seller.dmarket.com": {
+      "url": "grpc://seller.dmarket.com:8051"
     },
-    "mill.flourmill.com": {
-      "url": "grpc://mill.flourmill.com:7051"
-    },
-    "ovens.bakingstuff.com": {
-      "url": "grpc://ovens.bakingstuff.com:7051"
+    "bank.dmarket.com": {
+      "url": "grpc://bank.dmarket.com:9051"
+    }
+  },
+  "orderers": {
+    "orderer.dmarket.com": {
+      "url": "grpc://orderer.dmarket.com:7050"
     }
   }
 }

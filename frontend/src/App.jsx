@@ -12,6 +12,22 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
+import { useAuth } from "./context/AuthContext";
+
+function AdminRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return <div className="container mx-auto p-4">Loading...</div>;
+  }
+  if (!user || user.role !== "admin") {
+    return (
+      <div className="container mx-auto p-4 text-red-500">
+        Administrator privileges required to access this page
+      </div>
+    );
+  }
+  return children;
+}
 
 function App() {
   return (
@@ -27,11 +43,29 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/products/new" element={<AddProduct />} />
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/products/new"
+                element={
+                  <AdminRoute>
+                    <AddProduct />
+                  </AdminRoute>
+                }
+              />
               <Route
                 path="/admin/products/edit/:id"
-                element={<EditProduct />}
+                element={
+                  <AdminRoute>
+                    <EditProduct />
+                  </AdminRoute>
+                }
               />
             </Routes>
           </main>

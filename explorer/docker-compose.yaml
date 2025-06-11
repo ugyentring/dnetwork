@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-# version: "2.1"
+version: "3.8"
 
 volumes:
   pgdata:
   walletstore:
 
 networks:
-  mynetwork.com:
-    name: confectionary-nets
+  dmarket-nets:
     external: true
+
 services:
   explorerdb.mynetwork.com:
     image: ghcr.io/hyperledger-labs/explorer-db:latest
@@ -26,7 +26,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - mynetwork.com
+      - dmarket-nets
 
   explorer.mynetwork.com:
     image: ghcr.io/hyperledger-labs/explorer:latest
@@ -54,4 +54,4 @@ services:
       explorerdb.mynetwork.com:
         condition: service_healthy
     networks:
-      - mynetwork.com
+      - dmarket-nets

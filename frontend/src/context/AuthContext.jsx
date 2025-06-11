@@ -14,11 +14,19 @@ export function AuthProvider({ children }) {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          const userData = await getProfile(token);
-          setUser(userData);
+          // Try to get user from localStorage first for role persistence
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            setUser(JSON.parse(storedUser));
+          } else {
+            const userData = await getProfile(token);
+            setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
+          }
         }
       } catch (error) {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
       } finally {
         setLoading(false);
       }
@@ -29,6 +37,7 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     const { user, token } = await loginUser(credentials);
     localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
     navigate("/");
   };
@@ -36,12 +45,14 @@ export function AuthProvider({ children }) {
   const register = async (userData) => {
     const { user, token } = await registerUser(userData);
     localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
     navigate("/");
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
   };

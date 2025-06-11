@@ -9,6 +9,24 @@ Capabilities:
 
 # Organizations
 Organizations:
+  - &Orderer
+    Name: Orderer
+    ID: OrdererMSP
+    MSPDir: ./crypto-config/ordererOrganizations/dmarket.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+
   - &Buyer
     Name: Buyer
     ID: BuyerMSP
@@ -23,8 +41,11 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('BuyerMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('BuyerMSP.member')"
     AnchorPeers:
-      - Host: buyer.dmarket.com
+      - Host: peer0.buyer.dmarket.com
         Port: 7051
 
   - &Seller
@@ -41,9 +62,12 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('SellerMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('SellerMSP.member')"
     AnchorPeers:
-      - Host: seller.dmarket.com
-        Port: 8051
+      - Host: peer0.seller.dmarket.com
+        Port: 7051
 
   - &Bank
     Name: Bank
@@ -59,30 +83,18 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('BankMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('BankMSP.member')"
     AnchorPeers:
-      - Host: bank.dmarket.com
-        Port: 9051
-
-  - &Orderer
-    Name: Orderer
-    ID: OrdererMSP
-    MSPDir: ./crypto-config/ordererOrganizations/dmarket.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('OrdererMSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('OrdererMSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('OrdererMSP.admin')"
+      - Host: peer0.bank.dmarket.com
+        Port: 7051
 
 # Orderer
 Orderer: &OrdererDefaults
   OrdererType: solo
   Addresses:
-    - orderer.dmarket.com:7050
+    - orderer.ordererservice.bt:7050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10
@@ -180,7 +192,11 @@ Profiles:
     Consortium: DMarketConsortium
     Application:
       <<: *ApplicationDefaults
+      Capabilities:
+        <<: *ApplicationCapabilities
       Organizations:
         - <<: *Buyer
         - <<: *Seller
         - <<: *Bank
+
+  

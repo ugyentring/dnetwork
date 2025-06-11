@@ -3,12 +3,15 @@ import { API_BASE } from "./api";
 
 export const loginUser = async (credentials) => {
   const response = await axios.post(`${API_BASE}/auth/login`, credentials);
-  return response.data;
+  // Wrap the response so AuthContext gets { user, token }
+  const { token, ...user } = response.data;
+  return { user, token };
 };
 
 export const registerUser = async (userData) => {
   const response = await axios.post(`${API_BASE}/auth/register`, userData);
-  return response.data;
+  const { token, ...user } = response.data;
+  return { user, token };
 };
 
 export const getProfile = async (token) => {
