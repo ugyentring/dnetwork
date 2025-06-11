@@ -14,10 +14,10 @@ export function CartProvider({ children }) {
 
   const addToCart = (product, quantity = 1) => {
     setCartItems(prev => {
-      const existing = prev.find(item => item.product._id === product._id);
+      const existing = prev.find(item => item.product.id === product.id);
       if (existing) {
         return prev.map(item =>
-          item.product._id === product._id
+          item.product.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -27,7 +27,7 @@ export function CartProvider({ children }) {
   };
 
   const removeFromCart = (productId) => {
-    setCartItems(prev => prev.filter(item => item.product._id !== productId));
+    setCartItems(prev => prev.filter(item => item.product.id !== productId));
   };
 
   const clearCart = () => setCartItems([]);
